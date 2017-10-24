@@ -274,6 +274,49 @@ Feel free to contact any of the authors or create an issue on the
 [issue tracking system](https://github.com/simongog/sdsl-lite/issues).
 
 
+Personal copy of SDSL
+---------------------
+
+This branch of SDSL includes code for the following research projects:
+
+#### Succinct Run-length Encoded Rank/Select Data Structure
+
+This project provides a succinct data structure to support access, rank and
+select operations over a sequence with runs. 
+
+A full description of the structure is available [here](# "soon").
+
+```cpp
+#include <sdsl/rl_runs.hpp>
+
+using namespace sdsl;
+using namespace std;
+
+int main() {
+
+    rl_runs<> rl_default; // Default configuration. Sampling size of 256 and
+	                      // wt_gmr underlying structure
+    rl_runs<64> rl_64; // Sampling size of 64 and wt_gmr underlying structure
+    rl_runs<64,wt_ap<>> rl_64_ap; // Sampling size of 64 and wt_ap underlying structure
+    rl_runs<64,wt_rlmn<>> rl_64_rlmn; // Sampling size of 64 and wt_rlmn underlying structure
+
+    construct(rl_default, argv[1], 1);
+    construct(rl_64, argv[1], 1);
+    construct(rl_64_ap, argv[1], 1);
+    construct(rl_64_rlmn, argv[1], 1);
+
+    cout << "Size rl_default: " << size_in_bytes(rl_default) << " bytes" << endl;
+    cout << "Size rl_64: " << size_in_bytes(rl_64) << " bytes" << endl;
+    cout << "Size rl_64_ap: " << size_in_bytes(rl_64_ap) << " bytes" << endl;
+    cout << "Size rl_64_rlmn: " << size_in_bytes(rl_64_rlmn) << " bytes" << endl;
+
+    cout << "rl_default[10]: " << rl_default[10] << endl;
+    cout << "rl_default.rank(10, 'A'): " << rl_default.rank(10, 'A') << endl;
+    cout << "rl_default.select(10, 'A'): " << rl_default.select(10, 'A') << endl;
+}
+```
+
+
 [STL]: http://www.sgi.com/tech/stl/ "Standard Template Library"
 [pz]: http://pizzachili.di.unipi.it/ "Pizza&amp;Chli"
 [d3js]: http://d3js.org "D3JS library"
