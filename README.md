@@ -286,6 +286,8 @@ select operations over a sequence with runs.
 
 A full description of the structure is available [here](# "soon").
 
+The structure can be used as follows:
+
 ```cpp
 #include <sdsl/rl_runs.hpp>
 
