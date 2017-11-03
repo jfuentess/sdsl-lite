@@ -422,14 +422,7 @@ ermined automatically.
 	    if(m_X[m] < i)
 	      m++;
 
-	    int32_t local_m =  m - _get_offset(map_sym)+1;
-
-	    // m_X[m] >= m_jump: Special case for symbols with less runs than m_jump
-	    if(m_X[m] == i && m_X[m] >= m_jump) {	      
-	      size_type s = m_R_wt.select(local_m*m_jump,c);
-	      return m_B_select1(s+1);
-	    }
-	    
+	    int32_t local_m =  m - _get_offset(map_sym)+1;	    
 
 	    if(m > _get_offset(map_sym))
 	      i -= m_X[m-1];
