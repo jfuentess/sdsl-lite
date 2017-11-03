@@ -22,7 +22,7 @@
 namespace sdsl
 {
 
-  template<int_vector<>::size_type jump = 256,
+  template<int_vector<>::size_type jump = 16,
          class t_wt              = wt_gmr<>,              // Wavelet tree type
 	 class t_bitvector   = bit_vector,
 	 class t_sparse_bitvector   = sd_vector<>,
