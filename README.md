@@ -312,12 +312,17 @@ int main() {
     cout << "Size rl_64_ap: " << size_in_bytes(rl_64_ap) << " bytes" << endl;
     cout << "Size rl_64_rlmn: " << size_in_bytes(rl_64_rlmn) << " bytes" << endl;
 
-    cout << "rl_default[10]: " << rl_default[10] << endl;
-    cout << "rl_default.rank(10, 'A'): " << rl_default.rank(10, 'A') << endl;
-    cout << "rl_default.select(10, 'A'): " << rl_default.select(10, 'A') << endl;
+    int32_t a = rl_default[10];
+    cout << "rl_default[10]: " << a << endl;
+    cout << "rl_default.rank(10, " << a << "): " << rl_default.rank(10, a) << endl;
+    cout << "rl_default.select(10, " << a << "): " << rl_default.select(10, a) << endl;
 }
 ```
+to compile, just run:
 
+```sh
+g++ -std=c++11 -O3 -DNDEBUG -I ~/include -L ~/lib program.cpp -o program -lsdsl
+```
 
 [STL]: http://www.sgi.com/tech/stl/ "Standard Template Library"
 [pz]: http://pizzachili.di.unipi.it/ "Pizza&amp;Chli"
