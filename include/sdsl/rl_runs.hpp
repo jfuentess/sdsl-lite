@@ -12,6 +12,7 @@
 #include "select_support_mcl.hpp"
 #include "wt_helper.hpp"
 #include "util.hpp"
+#include "wavelet_trees.hpp"
 #include <algorithm> // for std::swap
 #include <stdexcept>
 #include <vector>

@@ -294,7 +294,7 @@ The structure can be used as follows:
 using namespace sdsl;
 using namespace std;
 
-int main() {
+int main(int argc, char **argv) {
 
     rl_runs<> rl_default; // Default configuration. Sampling size of 256 and
 	                      // wt_gmr underlying structure
