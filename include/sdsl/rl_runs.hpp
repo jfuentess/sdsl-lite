@@ -4,6 +4,7 @@
 /*
   To Do:
   - Improv the performance of the construction: Scan only once the input sequence
+  - Choose int8_t, int16_t or int32_t according to the input
 */
 
 #include "sdsl_concepts.hpp"
@@ -142,7 +143,7 @@ ermined automatically.
 	  m_runs++;
 	  bit_vector_type mapping(x,0);
 	  int_vector<> R(m_runs,0,buf.width());
-	  bit_vector_type B_local(buf.size(),0);
+	  bit_vector_type B_local(n,0);
 	  int_vector<> runs_size(m_runs,0,32);
 
 	  mapping[buf[0]] = 1;
@@ -158,9 +159,9 @@ ermined automatically.
 	      j++;
 	    }
 	  }
-	  R[m_runs-1] = buf[buf.size()-1];
-	  B_local[buf.size()-1] = 1;
-	  runs_size[m_runs-1] = buf.size()-l;
+	  R[m_runs-1] = buf[n-1];
+	  B_local[n-1] = 1;
+	  runs_size[m_runs-1] = n-l;
 
 	  m_mapping.swap(mapping);
 	  util::init_support(m_mapping_rank, &m_mapping);
@@ -406,13 +407,14 @@ ermined automatically.
             assert(1 <= i and i <= rank(size(), c));
 	    
 	    size_type map_sym = m_mapping_rank(c);
-	    int32_t ll = _get_offset(map_sym);
+	    int32_t go = _get_offset(map_sym);
+	    int32_t ll = go;
 	    int32_t ul = (map_sym == m_sigma-1) ? m_X.size()-1 : _get_offset(map_sym+1)-1;
 	    
 	    // Find the closest greater/equal value to i in X_c [Binary search]
 	    int32_t m;
 	    while(ll <= ul) {
-	      m = (ll+ul)/2;
+	      m = ll+(ul-ll)/2 // The traditional m = (ll+ul)/2 has a bug
 	      if(m_X[m] == i)
 		break;
 	      else if(m_X[m] < i)
@@ -423,9 +425,9 @@ ermined automatically.
 	    if(m_X[m] < i)
 	      m++;
 
-	    int32_t local_m =  m - _get_offset(map_sym)+1;	    
+	    int32_t local_m =  m - go+1;	    
 
-	    if(m > _get_offset(map_sym))
+	    if(m > go)
 	      i -= m_X[m-1];
 	    
 	    ll = (local_m-1)*m_jump;
@@ -433,13 +435,14 @@ ermined automatically.
 
 	    for(size_type j=ll+1; j<=ul; j++) {
 	      size_type s = m_R_wt.select(j,c);
-	      int32_t a = (s) ? m_B_select1(s) : -1;
+	      int32_t sel1_s = (s) ? m_B_select1(s) : -1;
+	      int32_t a = sel1_s;
 	      int32_t b = m_B_select1(s+1);
 	      int32_t r = b-a;
 	      
 	      if(i < r) {
 	    	// Special case for the first run
-	    	return (s)? m_B_select1(s) + i : i -1;
+	    	return (s)? sel1_s + i : i -1;
 	      }
 	      else if(i == r)
 	    	return b;
