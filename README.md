@@ -284,7 +284,7 @@ This branch of SDSL includes code for the following research projects:
 This project provides a succinct data structure to support access, rank and
 select operations over a sequence with runs. 
 
-A full description of the structure is available [here](# "soon").
+A full description of the structure is available [here](https://arxiv.org/abs/1711.02910 "Run Compressed Rank/Select for Large Alphabets").
 
 The structure can be used as follows:
 
