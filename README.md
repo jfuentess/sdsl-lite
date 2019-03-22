@@ -327,7 +327,7 @@ A full description of the structure is available
 [here](https://arxiv.org/abs/1610.00130 "Fast and Compact Planar Embeddings").
 
 A corpus with planar embeddings is available
-[here](https://users.dcc.uchile.cl/~jfuentess/datasets/graphs.php, "Experimental
+[here](https://users.dcc.uchile.cl/~jfuentess/datasets/graphs.php "Experimental
 datasets: Planar graphs")
 
 The structure can be used as follows:
