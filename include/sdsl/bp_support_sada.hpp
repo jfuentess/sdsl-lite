@@ -901,6 +901,16 @@ class bp_support_sada
             return m_size;
         }
 
+        /*! Return the position in m_bp of the parent of the node with index i	  
+        */
+        size_type parent_t(size_type i) {
+	  if(!(*m_bp)[i])
+	    i = find_open(i);
+
+	  if(!i) return i; // The root of the tree
+	  return bwd_excess(i, -2)+1;
+	}
+
         //! Serializes the bp_support_sada to a stream.
         /*!
          * \param out The outstream to which the data structure is written.
