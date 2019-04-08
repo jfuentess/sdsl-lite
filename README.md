@@ -333,7 +333,7 @@ datasets: Planar graphs")
 The structure can be used as follows:
 
 ```cpp
-#include <sdsl/pg.hpp>
+#include <sdsl/pemb.hpp>
 #include <complementary/Graph.hpp>
 #include <complementary/utils.hpp>
 
@@ -344,10 +344,10 @@ int main(int argc, char **argv) {
   // argv[1] is the path to a file with the planar embedding.
   // To check the input format, visit https://users.dcc.uchile.cl/~jfuentess/datasets/graphs.php
   Graph g = read_graph_from_file(argv[1]);
-  pg<> pemb(g);
+  pemb<> pe(g);
 
-  cout << "Size in bytes: " << size_in_bytes(pemb) << " B" << endl;
-  cout << "Degree of vertex 10: " << pemb.degree(10) << endl;
+  cout << "Size in bytes: " << size_in_bytes(pe) << " B" << endl;
+  cout << "Degree of vertex 10: " << pe.degree(10) << endl;
 }
 ```
 

@@ -1,5 +1,5 @@
-#ifndef INCLUDED_SDSL_PG
-#define INCLUDED_SDSL_PG
+#ifndef INCLUDED_SDSL_PEMB
+#define INCLUDED_SDSL_PEMB
 
 #include "sdsl_concepts.hpp"
 #include "int_vector.hpp"
@@ -52,12 +52,12 @@ namespace sdsl
 	   class t_rank        = typename t_bitvector::rank_1_type,
 	   class t_select1     = typename t_bitvector::select_1_type,
 	   class t_select0     = typename t_bitvector::select_0_type>
-class pg
+class pemb
 {
     public:
         typedef int_vector<>::size_type              size_type;
         typedef int_vector<>::value_type             value_type;
-        typedef random_access_const_iterator<pg> const_iterator;
+        typedef random_access_const_iterator<pemb> const_iterator;
         typedef const_iterator                       iterator;
         typedef t_bitvector                          bit_vector_type;
         typedef t_rank                               rank_1_type;
@@ -77,7 +77,7 @@ protected:
         succ_tree          m_B_st;
         succ_tree          m_B_star_st;
 
-        void copy(const pg& p) {
+        void copy(const pemb& p) {
             m_vertices          = p.m_vertices;
             m_edges         = p.m_edges;
             m_A       = p.m_A;
@@ -99,9 +99,9 @@ protected:
     public:
 
         //! Default constructor
-        pg() {};
+        pemb() {};
 
-        pg(Graph g) {
+        pemb(Graph g) {
 	  m_vertices = g.vertices();
 	  m_edges = g.edges();
 
@@ -232,17 +232,17 @@ protected:
         }
 
         //! Copy constructor
-        pg(const pg& g) {
+        pemb(const pemb& g) {
             copy(g);
         }
 
         //! Copy constructor
-        pg(pg&& g) {
+        pemb(pemb&& g) {
             *this = std::move(g);
         }
 
         //! Assignment operator
-        pg& operator=(const pg g) {
+        pemb& operator=(const pemb g) {
             if (this != &g) {
                 copy(g);
             }
@@ -250,7 +250,7 @@ protected:
         }
 
         //! Assignment move operator
-        pg& operator=(pg&& g) {
+        pemb& operator=(pemb&& g) {
             if (this != &g) {
                 m_vertices          = g.m_vertices;
                 m_edges         = g.m_edges;
@@ -276,7 +276,7 @@ protected:
         }
 
         //! Swap operator
-        void swap(pg& g) {
+        void swap(pemb& g) {
             if (this != &g) {
                 std::swap(m_vertices, g.m_vertices);
                 std::swap(m_edges,  g.m_edges);
