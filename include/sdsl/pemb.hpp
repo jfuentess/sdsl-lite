@@ -113,9 +113,6 @@ protected:
 
 	  Tree t = g.dfs_spanning_tree(init, parent, count_edges, references);
 	  
-	  std::stack <unsigned int > s;
-	  s.push(t.getNodeFirst(init));
-
 	  bit_vector_type A_local(2*m_edges,0);
 	  bit_vector_type B_local(2*m_vertices,0);
 	  bit_vector_type B_star_local(2*m_edges-2*m_vertices+4,0);
