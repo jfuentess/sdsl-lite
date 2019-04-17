@@ -249,6 +249,39 @@ inline uint64_t elias_gamma::decode(const uint64_t* d, const size_type start_idx
     return value;
 }
 
+inline uint64_t elias_gamma::decode_value(const uint64_t** d, uint8_t *offset, const size_type start_idx, size_type n)
+{
+    const uint64_t* local_d = *d;
+    local_d += (start_idx >> 6);
+    uint64_t value = 0;
+    size_type i = 0;
+    size_type len_1, len;
+    uint8_t local_offset = start_idx & 0x3F;
+
+    while (i++ < n) {// while not all values are decoded
+      len_1 	=  bits::read_unary_and_move(local_d, local_offset); 
+      value	+= bits::read_int_and_move(local_d, local_offset, len_1) + (len_1<64) * (1ULL << len_1); 
+    }
+    *d = local_d;
+    *offset = local_offset;
+    
+    return value;
+}
+
+inline uint32_t elias_gamma::decode_diff(const uint64_t** d, uint8_t *offset)
+{
+    uint64_t value = 0;
+    size_type len_1, len;
+    uint8_t local_offset = *offset;
+
+    len_1 	=  bits::read_unary_and_move(*d, local_offset); 
+    value	+= bits::read_int_and_move(*d, local_offset, len_1) + (len_1<64) * (1ULL << len_1); 
+
+    *offset = local_offset;
+    return value;
+}
+
+
 } // end namespace coder
 } // end namespace sdsl
 #endif

@@ -252,6 +252,50 @@ inline uint64_t elias_delta::decode(const uint64_t* d, const size_type start_idx
     return value;
 }
 
+  inline uint64_t elias_delta::decode_value(const uint64_t** d, uint8_t *offset, const size_type start_idx, size_type n)
+{
+    const uint64_t* local_d = *d;
+    local_d += (start_idx >> 6);
+    uint64_t value = 0;
+    size_type i = 0;
+    size_type len_1_len, len;
+    uint8_t local_offset = start_idx & 0x3F;
+
+    while (i++ < n) {// while not all values are decoded
+        len_1_len = bits::read_unary_and_move(local_d, local_offset); // read length of length of x
+        if (!len_1_len) {
+            value += 1;
+        } else {
+            len 	=  bits::read_int_and_move(local_d, local_offset,
+						   len_1_len) + (1ULL << len_1_len); 
+            value	+= bits::read_int_and_move(local_d, local_offset, len-1)
+	      + (len-1<64) * (1ULL << (len-1)); 
+        }
+    }
+    *d = local_d;
+    *offset = local_offset;
+    
+    return value;
+}
+
+inline uint32_t elias_delta::decode_diff(const uint64_t** d, uint8_t *offset)
+{
+    size_type len_1_len, len;
+    uint8_t local_offset = *offset;
+
+    uint32_t value = 0;
+    len_1_len = bits::read_unary_and_move(*d, local_offset); // read length of length of x
+    if (!len_1_len) {
+      value += 1;
+    } else {
+      len 	=  bits::read_int_and_move(*d, local_offset, len_1_len) + (1ULL << len_1_len);
+      value	+= bits::read_int_and_move(*d, local_offset, len-1) + (len-1<64) * (1ULL << (len-1));
+    }
+
+    *offset = local_offset;
+    return value;
+}
+
 } // end namespace coder
 } // end namespace sdsl
 #endif
