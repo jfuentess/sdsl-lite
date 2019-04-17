@@ -121,6 +121,15 @@ class elias_gamma
             \param start_idx Index of the first bit to endcode the values from.
         	\param n Number of values to decode from the bitstring. Attention: There have to be at least n encoded values in the bitstring.
          */
+
+        // Decode a delta value, without summing up all the preceding deltas
+        static uint32_t decode_diff(const uint64_t** d, uint8_t *offset);
+
+        // Decode a store value (similar to the operator []), and set pointers d
+        // and offset to the start_idx position
+        static uint64_t decode_value(const uint64_t** d, uint8_t *offset, const
+				      size_type start_idx, size_type n); 
+  
         static uint64_t decode_prefix_sum(const uint64_t* d, const size_type start_idx, size_type n);
         static uint64_t decode_prefix_sum(const uint64_t* d, const size_type start_idx, const size_type end_idx, size_type n);
 
@@ -248,8 +257,9 @@ inline uint64_t elias_gamma::decode(const uint64_t* d, const size_type start_idx
     }
     return value;
 }
+  
 
-inline uint64_t elias_gamma::decode_value(const uint64_t** d, uint8_t *offset, const size_type start_idx, size_type n)
+  inline uint64_t elias_gamma::decode_value(const uint64_t** d, uint8_t *offset, const size_type start_idx, size_type n)
 {
     const uint64_t* local_d = *d;
     local_d += (start_idx >> 6);
@@ -280,6 +290,7 @@ inline uint32_t elias_gamma::decode_diff(const uint64_t** d, uint8_t *offset)
     *offset = local_offset;
     return value;
 }
+
 
 
 } // end namespace coder

@@ -120,6 +120,14 @@ class elias_delta
         template<bool t_sumup, bool t_inc,class t_iter>
         static uint64_t decode(const uint64_t* data, const size_type start_idx, size_type n, t_iter it=(t_iter)nullptr);
 
+        // Decode a delta value, without summing up all the preceding deltas
+        static uint32_t decode_diff(const uint64_t** d, uint8_t *offset);
+
+        // Decode a store value (similar to the operator []), and set pointers d
+        // and offset to the start_idx position
+        static uint64_t decode_value(const uint64_t** d, uint8_t *offset, const
+				      size_type start_idx, size_type n); 
+  
         //! Decode n Elias delta encoded integers beginning at start_idx in the bitstring "data"  and return the sum of these values.
         /*! \param data Pointer to the beginning of the Elias delta encoded bitstring.
             \param start_idx Index of the first bit to endcode the values from.
@@ -238,6 +246,7 @@ inline uint64_t elias_delta::decode(const uint64_t* d, const size_type start_idx
     size_type i = 0;
     size_type len_1_len, len;
     uint8_t offset = start_idx & 0x3F;
+
     while (i++ < n) {// while not all values are decoded
         if (!t_sumup) value = 0;
         len_1_len = bits::read_unary_and_move(d, offset); // read length of length of x
@@ -252,7 +261,7 @@ inline uint64_t elias_delta::decode(const uint64_t* d, const size_type start_idx
     return value;
 }
 
-  inline uint64_t elias_delta::decode_value(const uint64_t** d, uint8_t *offset, const size_type start_idx, size_type n)
+inline uint64_t elias_delta::decode_value(const uint64_t** d, uint8_t *offset, const size_type start_idx, size_type n)
 {
     const uint64_t* local_d = *d;
     local_d += (start_idx >> 6);
@@ -295,6 +304,7 @@ inline uint32_t elias_delta::decode_diff(const uint64_t** d, uint8_t *offset)
     *offset = local_offset;
     return value;
 }
+
 
 } // end namespace coder
 } // end namespace sdsl
