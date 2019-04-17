@@ -165,6 +165,28 @@ class enc_vector
          */
         value_type sample(const size_type i) const;
 
+        //! Similar to the operator [], but it also sets the pointers d and offset
+        value_type get_value(const uint64_t** d, uint8_t *offset, const size_type i)
+        {
+	  uint32_t dens = get_sample_dens();
+	  size_type idx = i/dens;
+	  value_type out =  sample(idx);
+	  size_type rem = i-dens*idx;
+
+	  *offset = 0;
+	  *d = m_z.data();
+	  
+	  out += t_coder::decode_value(d, offset, m_sample_vals_and_pointer[(idx<<1)+1], rem);
+
+	  return out;
+        };
+
+        //! Return the stored difference using as sentinels the pointers d and offset
+        value_type get_diff(const uint64_t** d, uint8_t *offset)
+        {
+	  return t_coder::decode_diff(d, offset);
+        };
+
         uint32_t get_sample_dens() const
         {
             return t_dens;
