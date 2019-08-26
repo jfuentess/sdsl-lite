@@ -9,6 +9,7 @@ private:
   unsigned int tgt; // Index of the target vertex of the edge
   int cmp; // Position of the complementary edge (in the adjacency list of
 	   // tgt). cmp < 0 means that the field cmp is undefined
+  bool orientation; // Orientation of the edge (1: direct, 0: inverse)
 
 public:
   Edge(){}
@@ -27,6 +28,10 @@ public:
     return this->cmp;
   }
 
+  bool getOrientation(){
+    return this->orientation;
+  }
+
   void setSrc(unsigned int s) {
     this->src = s;
   }
@@ -37,6 +42,10 @@ public:
   
   void setCmp(int c) {
     this->cmp = c;
+  }
+
+  void setOrientation(bool o) {
+    this->orientation = o;
   }
 };
 

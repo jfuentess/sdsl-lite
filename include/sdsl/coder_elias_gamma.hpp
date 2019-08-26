@@ -265,7 +265,7 @@ inline uint64_t elias_gamma::decode(const uint64_t* d, const size_type start_idx
     local_d += (start_idx >> 6);
     uint64_t value = 0;
     size_type i = 0;
-    size_type len_1, len;
+    size_type len_1;
     uint8_t local_offset = start_idx & 0x3F;
 
     while (i++ < n) {// while not all values are decoded
@@ -281,7 +281,7 @@ inline uint64_t elias_gamma::decode(const uint64_t* d, const size_type start_idx
 inline uint32_t elias_gamma::decode_diff(const uint64_t** d, uint8_t *offset)
 {
     uint64_t value = 0;
-    size_type len_1, len;
+    size_type len_1;
     uint8_t local_offset = *offset;
 
     len_1 	=  bits::read_unary_and_move(*d, local_offset); 

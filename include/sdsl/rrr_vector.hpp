@@ -380,6 +380,11 @@ class rrr_vector
         {
             return iterator(this, size());
         }
+
+        uint16_t get_class(size_type i)const {
+	  size_type bt_idx = i/t_bs;
+	  return m_bt[bt_idx];
+	}
 };
 
 template<uint8_t t_bit_pattern>

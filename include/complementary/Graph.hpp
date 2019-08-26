@@ -5,7 +5,16 @@
 #include <stack>
 #include "Tree.hpp"
 
+#include <sdsl/int_vector.hpp>
+
 using namespace std;
+using namespace sdsl;
+
+#define CLOSE_PAR 0
+#define OPEN_PAR 1
+#define EMPTY 2
+#define NONE 3
+
 
 class Graph {
 
@@ -42,6 +51,7 @@ public:
     this->E[i].setSrc(src);
     this->E[i].setTgt(tgt);
     this->E[i].setCmp(-1);
+    this->E[i].setOrientation(1); // Direct
   }
 
   // V[i].first = first and V[i].last = last
@@ -72,6 +82,10 @@ public:
     this->E[i].setCmp(c);
   }
 
+  void setEdgeOrientation(int i, bool o) {
+    this->E[i].setOrientation(o);
+  }
+
   unsigned int getEdgeSrc(int i) {
     return this->E[i].getSrc();
   }
@@ -82,6 +96,30 @@ public:
 
   int getEdgeCmp(int i) {
     return this->E[i].getCmp();
+  }
+
+  bool getEdgeOrientation(int i) {
+    return this->E[i].getOrientation();
+  }
+
+  // Return the next edge in counter-clockwise order
+  unsigned int getNextEdgeCCW(int i) {
+
+    uint src = this->getEdgeSrc(i);
+    uint first = this->getVertexFirst(src);
+    uint last = this->getVertexLast(src);
+    
+    return ((uint)(i+1) > last)? first : i+1;
+  }
+
+  // Return the next edge in clockwise order
+  unsigned int getNextEdgeCW(int i) {
+
+    uint src = this->getEdgeSrc(i);
+    int first = (int)this->getVertexFirst(src);
+    int last = (int)this->getVertexLast(src);
+    
+    return (i-1 < first)? last : i-1;
   }
 
   Vertex getVertex(int i) {
@@ -233,6 +271,85 @@ public:
     cout << "unvisited vertices: " << num_vertices << ", visited vertices: " <<
       n-num_vertices << endl;
   }
+
+  int_vector<> ps_tree_encoding() {
+    unsigned int n = this->vertices();
+    unsigned int m = this->edges();
+
+    int_vector<> S(4*n-5, NONE, 8); // Output string
+    char *visited = new char[2*m]();
+    /*** Initial setting ***/
+    
+    // Set the external edges as visited (they are not considered in the
+    // traversal)
+    uint ext0 = 0; // By definition
+    uint ext1 = this->getEdgeTgt(this->getVertexFirst(ext0));
+    uint ext2 = this->getEdgeTgt(this->getVertexLast(ext0));
+    visited[this->getVertexFirst(ext0)] = 1;
+    visited[this->getVertexLast(ext0)] = 1;
+    visited[this->getVertexFirst(ext1)] = 1;
+    visited[this->getVertexLast(ext1)] = 1;
+    visited[this->getVertexFirst(ext2)] = 1;
+    visited[this->getVertexLast(ext2)] = 1;
+
+    // For any maximal planar graph, the following entries of S are already defined
+    S[0] = OPEN_PAR;       S[4*n-6] = CLOSE_PAR;
+    S[1] = OPEN_PAR;       S[4*n-7] = CLOSE_PAR;
+    S[2] = OPEN_PAR;       S[4*n-8] = CLOSE_PAR;
+    S[3] = EMPTY;
+    
+    /*** Traversal ***/
+    
+    uint v = 0; // Starting vertex (by definition)
+    uint e = this->getVertexLast(v); // Starting edge (by definition)
+    uint end_e = this->getVertexFirst(v); // Stop condition
+    uint ee = this->getNextEdgeCW(e);
+    uint id = 4;
+
+    while(ee != end_e) {
+      if(!visited[ee] && this->getEdgeOrientation(ee)) {
+    	visited[ee] = 1;
+    	visited[this->getEdgeCmp(ee)] = 1;
+    	S[id++] = EMPTY;
+    	e = ee;
+      }
+      else if(!visited[ee] && !this->getEdgeOrientation(ee)) {
+    	visited[ee] = 1;
+    	visited[this->getEdgeCmp(ee)] = 1;
+    	S[id++] = OPEN_PAR;
+    	e = this->getEdgeCmp(ee);
+      }
+      else if(visited[ee] && this->getEdgeOrientation(ee)) {
+    	S[id++] = CLOSE_PAR;
+    	e = this->getEdgeCmp(ee);
+      }
+      else {
+    	e = ee;
+      }
+      ee = this->getNextEdgeCW(e);
+
+    }
+    
+    /* Convert the cw traversal into a ccw traversal */
+
+    int mid = (4*n-5) / 2;
+
+    // Reverse the sequence S
+    for(int i=0, j=4*n-6; i < mid; i++, j--) {
+      char cp = S[i];
+      S[i] = S[j];
+      S[j] = cp;
+    }
+
+    // Change close parentheses by open parentheses
+    for(uint i=0; i < 4*n-5; i++) {
+      if(S[i] == OPEN_PAR) S[i] = CLOSE_PAR;
+      else if(S[i] == CLOSE_PAR) S[i] = OPEN_PAR;
+    }
+
+    return S;
+  }
+  
 };
 
 #endif
