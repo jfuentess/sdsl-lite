@@ -351,7 +351,45 @@ int main(int argc, char **argv) {
 }
 ```
 
+#### Succinct encoding of unbalanced binary strings representing triangulations
+
+This project provides a succinct data structure to represent triangulations. 
+
+A full description of the structure will be available soon.
+
+The structure can be used as follows:
+
+```cpp
+#include <complementary/Graph.hpp>
+#include <complementary/utils.hpp>
+
+#include <sdsl/max_planar.hpp>
+#include <sdsl/rrr_vector.hpp>
+
+using namespace sdsl;
+using namespace std;
+
+int main(int argc, char **argv) {
+  Graph g = read_oriented_graph_from_file(argv[1]);
+  int bs = atoi(argv[2]);
+
+  max_planar_rmmt<rrr_vector<>> mpg(g, bs);
+
+  cout << "Number of vertices: " << mpg.vertices() << endl;
+  cout << "Number of edges: " << mpg.edges() << endl;
+  cout << "Size in bytes: " << size_in_bytes(mpg) << " B" << endl;
+  
+  if(mpg.are_neighbors(0, 10))
+    cout << "Vertices 0 and 10 are neighbors" << endl;
+  else
+    cout << "Vertices 0 and 10 are not neighbors" << endl;
+
+  cout << "The degree of vertex 10 is " << mpg.degree(10) << endl;
+}
+```
+
 to compile, just run:
+
 
 ```sh
 g++ -std=c++11 -O3 -DNDEBUG -I ~/include -L ~/lib program.cpp -o program -lsdsl
